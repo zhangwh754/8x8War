@@ -1,6 +1,8 @@
 import TileManager from "../TileManager";
+import MouseEvent from "../MouseEvent";
 
 class MapManager {
+  canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   canvasWidth: number;
   canvasHeight: number;
@@ -9,7 +11,19 @@ class MapManager {
   tileWidth: number;
   tileHeight: number;
 
-  constructor(ctx: CanvasRenderingContext2D, width: number, height: number) {
+  tiles: TileManager[]; // 存储所有的瓦片
+  hoverTile: TileManager | null; // 覆盖的瓦片
+  activeTile: TileManager | null; // 激活的瓦片
+
+  private mouseEvent: MouseEvent;
+
+  constructor(
+    canvas: HTMLCanvasElement,
+    ctx: CanvasRenderingContext2D,
+    width: number,
+    height: number
+  ) {
+    this.canvas = canvas;
     this.ctx = ctx;
     this.canvasWidth = width;
     this.canvasHeight = height;
@@ -18,11 +32,28 @@ class MapManager {
     this.tileWidth = 100; // 瓦片宽度
     this.tileHeight = 64; // 瓦片高度
 
-    this.render();
+    this.tiles = [];
+    this.hoverTile = null;
+    this.activeTile = null;
+
+    this.mouseEvent = new MouseEvent(
+      this.canvas,
+      this.gridSize,
+      this.tileWidth,
+      this.tileHeight
+    );
+
+    this.init();
+  }
+
+  init() {
+    this.gameLoop();
   }
 
   render() {
     this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+
+    const { hoveredTile, selectedTile } = this.mouseEvent;
 
     // 从后向前绘制瓦片，确保正确的重叠顺序
     for (let y = 0; y < this.gridSize; y++) {
@@ -35,9 +66,27 @@ class MapManager {
           y
         );
 
-        tile.render(this.canvasWidth, this.canvasHeight);
+        const isHovered =
+          hoveredTile?.x === tile.x && hoveredTile?.y === tile.y;
+        const isSelected =
+          selectedTile?.x === tile.x && selectedTile?.y === tile.y;
+
+        this.tiles.push(tile);
+
+        tile.render(this.canvasWidth, this.canvasHeight, isHovered, isSelected);
       }
     }
+  }
+
+  gameLoop() {
+    // 清空画布
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    // 渲染游戏画面
+    this.render();
+
+    // 继续下一帧
+    requestAnimationFrame(this.gameLoop.bind(this));
   }
 }
 

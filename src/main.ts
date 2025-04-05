@@ -19,7 +19,7 @@ class Game {
 
   start() {
     console.log("游戏开始");
-    new MapManager(this.ctx, canvasWidth, canvasHeight);
+    new MapManager(this.canvas, this.ctx, canvasWidth, canvasHeight);
   }
 }
 

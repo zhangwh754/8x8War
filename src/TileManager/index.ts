@@ -22,7 +22,12 @@ class TileManager {
   }
 
   // 绘制单个瓦片
-  render(canvasWidth: number, canvasHeight: number) {
+  render(
+    canvasWidth: number,
+    canvasHeight: number,
+    isHovered = false,
+    isSelected = false
+  ) {
     const pos = this.toIso(this.x, this.y, canvasWidth, canvasHeight);
     // 绘制矩形瓦片
     this.ctx.beginPath();
@@ -31,7 +36,15 @@ class TileManager {
     this.ctx.lineTo(pos.x, pos.y + this.tileHeight);
     this.ctx.lineTo(pos.x - this.tileWidth / 2, pos.y + this.tileHeight / 2);
     this.ctx.closePath();
-    this.ctx.fillStyle = "#ccc";
+
+    // 根据状态设置颜色
+    if (isSelected) {
+      this.ctx.fillStyle = "#4CAF50";
+    } else if (isHovered) {
+      this.ctx.fillStyle = "#81C784";
+    } else {
+      this.ctx.fillStyle = "#ccc";
+    }
 
     this.ctx.fill();
     this.ctx.strokeStyle = "#000";
