@@ -12,38 +12,45 @@ class MapManager {
     this.canvasHeight = height;
 
     this.gridSize = 8; // 网格个数
-
-    this.tileWidth = width / this.gridSize; // 瓦片宽度
-    this.tileHeight = height / this.gridSize; // 瓦片高度
+    this.tileWidth = 100; // 瓦片宽度
+    this.tileHeight = 64; // 瓦片高度
 
     this.render();
   }
 
   render() {
-    for (let i = 0; i < this.gridSize; i++) {
-      for (let j = 0; j < this.gridSize; j++) {
-        const x = i * this.tileWidth;
-        const y = j * this.tileHeight;
+    this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
+    // 从后向前绘制瓦片，确保正确的重叠顺序
+    for (let y = 0; y < this.gridSize; y++) {
+      for (let x = 0; x < this.gridSize; x++) {
         this.drawTile(x, y);
       }
     }
   }
 
+  // 转换坐标为等距坐标
+  toIso(x: number, y: number) {
+    return {
+      x: ((x - y) * this.tileWidth) / 2 + this.canvasWidth / 2,
+      y: ((x + y) * this.tileHeight) / 2 + this.canvasHeight / 4,
+    };
+  }
+
   // 绘制单个瓦片
   drawTile(x: number, y: number) {
+    const pos = this.toIso(x, y);
     // 绘制矩形瓦片
-    this.ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
-    this.ctx.fillRect(x, y, this.tileWidth, this.tileHeight);
+    this.ctx.beginPath();
+    this.ctx.moveTo(pos.x, pos.y);
+    this.ctx.lineTo(pos.x + this.tileWidth / 2, pos.y + this.tileHeight / 2);
+    this.ctx.lineTo(pos.x, pos.y + this.tileHeight);
+    this.ctx.lineTo(pos.x - this.tileWidth / 2, pos.y + this.tileHeight / 2);
+    this.ctx.closePath();
+    this.ctx.fillStyle = "#ccc";
 
-    // 绘制网格线
-    this.ctx.beginPath();
-    this.ctx.moveTo(x, 0);
-    this.ctx.lineTo(x, this.canvasHeight);
-    this.ctx.stroke();
-    this.ctx.beginPath();
-    this.ctx.moveTo(0, y);
-    this.ctx.lineTo(this.canvasWidth, y);
+    this.ctx.fill();
+    this.ctx.strokeStyle = "#000";
     this.ctx.stroke();
   }
 }
