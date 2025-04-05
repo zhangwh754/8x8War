@@ -1,7 +1,10 @@
+import TileManager from "../TileManager";
+
 class MapManager {
   ctx: CanvasRenderingContext2D;
   canvasWidth: number;
   canvasHeight: number;
+
   gridSize: number;
   tileWidth: number;
   tileHeight: number;
@@ -24,34 +27,17 @@ class MapManager {
     // 从后向前绘制瓦片，确保正确的重叠顺序
     for (let y = 0; y < this.gridSize; y++) {
       for (let x = 0; x < this.gridSize; x++) {
-        this.drawTile(x, y);
+        const tile = new TileManager(
+          this.ctx,
+          this.tileWidth,
+          this.tileHeight,
+          x,
+          y
+        );
+
+        tile.render(this.canvasWidth, this.canvasHeight);
       }
     }
-  }
-
-  // 转换坐标为等距坐标
-  toIso(x: number, y: number) {
-    return {
-      x: ((x - y) * this.tileWidth) / 2 + this.canvasWidth / 2,
-      y: ((x + y) * this.tileHeight) / 2 + this.canvasHeight / 4,
-    };
-  }
-
-  // 绘制单个瓦片
-  drawTile(x: number, y: number) {
-    const pos = this.toIso(x, y);
-    // 绘制矩形瓦片
-    this.ctx.beginPath();
-    this.ctx.moveTo(pos.x, pos.y);
-    this.ctx.lineTo(pos.x + this.tileWidth / 2, pos.y + this.tileHeight / 2);
-    this.ctx.lineTo(pos.x, pos.y + this.tileHeight);
-    this.ctx.lineTo(pos.x - this.tileWidth / 2, pos.y + this.tileHeight / 2);
-    this.ctx.closePath();
-    this.ctx.fillStyle = "#ccc";
-
-    this.ctx.fill();
-    this.ctx.strokeStyle = "#000";
-    this.ctx.stroke();
   }
 }
 
