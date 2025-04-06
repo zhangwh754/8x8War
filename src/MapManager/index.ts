@@ -47,13 +47,6 @@ class MapManager {
   }
 
   init() {
-    this.gameLoop();
-  }
-
-  render() {
-    this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-    const { hoveredTile, selectedTile } = this.mouseEvent;
-
     // 从后向前绘制瓦片，确保正确的重叠顺序
     for (let y = 0; y < this.gridSize; y++) {
       for (let x = 0; x < this.gridSize; x++) {
@@ -65,22 +58,31 @@ class MapManager {
           y
         );
 
-        const { isHovered, isSelected } = tile.checkStatus(
-          hoveredTile,
-          selectedTile
-        );
-
         this.tiles.push(tile);
-
-        tile.renderFloor(
-          this.canvasWidth,
-          this.canvasHeight,
-          isHovered,
-          isSelected
-        );
-        tile.renderUnit(this.canvasWidth, this.canvasHeight);
       }
     }
+
+    this.gameLoop();
+  }
+
+  render() {
+    this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+    const { hoveredTile, selectedTile } = this.mouseEvent;
+
+    this.tiles.forEach((tile) => {
+      const { isHovered, isSelected } = tile.checkStatus(
+        hoveredTile,
+        selectedTile
+      );
+
+      tile.renderFloor(
+        this.canvasWidth,
+        this.canvasHeight,
+        isHovered,
+        isSelected
+      );
+      tile.renderUnit(this.canvasWidth, this.canvasHeight);
+    });
   }
 
   gameLoop() {
