@@ -1,4 +1,4 @@
-// 瓦片类
+import { TileCoord } from "../MouseEvent";
 
 class TileManager {
   ctx: CanvasRenderingContext2D;
@@ -22,7 +22,7 @@ class TileManager {
   }
 
   // 绘制单个瓦片
-  render(
+  renderFloor(
     canvasWidth: number,
     canvasHeight: number,
     isHovered = false,
@@ -56,6 +56,16 @@ class TileManager {
     return {
       x: ((x - y) * this.tileWidth) / 2 + canvasWidth / 2,
       y: ((x + y) * this.tileHeight) / 2 + canvasHeight / 4,
+    };
+  }
+
+  checkStatus(hoveredTile: TileCoord, selectedTile: TileCoord) {
+    const isHovered = hoveredTile?.x === this.x && hoveredTile?.y === this.y;
+    const isSelected = selectedTile?.x === this.x && selectedTile?.y === this.y;
+
+    return {
+      isHovered,
+      isSelected,
     };
   }
 }

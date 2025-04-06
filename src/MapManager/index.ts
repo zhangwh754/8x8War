@@ -52,7 +52,6 @@ class MapManager {
 
   render() {
     this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-
     const { hoveredTile, selectedTile } = this.mouseEvent;
 
     // 从后向前绘制瓦片，确保正确的重叠顺序
@@ -66,14 +65,19 @@ class MapManager {
           y
         );
 
-        const isHovered =
-          hoveredTile?.x === tile.x && hoveredTile?.y === tile.y;
-        const isSelected =
-          selectedTile?.x === tile.x && selectedTile?.y === tile.y;
+        const { isHovered, isSelected } = tile.checkStatus(
+          hoveredTile,
+          selectedTile
+        );
 
         this.tiles.push(tile);
 
-        tile.render(this.canvasWidth, this.canvasHeight, isHovered, isSelected);
+        tile.renderFloor(
+          this.canvasWidth,
+          this.canvasHeight,
+          isHovered,
+          isSelected
+        );
       }
     }
   }

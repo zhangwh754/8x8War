@@ -1,4 +1,4 @@
-type TileCoord = {
+export type TileCoord = {
   x: number;
   y: number;
 } | null;
