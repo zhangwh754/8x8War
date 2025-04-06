@@ -78,6 +78,7 @@ class MapManager {
           isHovered,
           isSelected
         );
+        tile.renderUnit(this.canvasWidth, this.canvasHeight);
       }
     }
   }

@@ -1,4 +1,5 @@
 import { TileCoord } from "../MouseEvent";
+import { currentEnemy, currentPartner } from "../UnitManager";
 
 class TileManager {
   ctx: CanvasRenderingContext2D;
@@ -67,6 +68,72 @@ class TileManager {
       isHovered,
       isSelected,
     };
+  }
+
+  renderUnit(canvasWidth: number, canvasHeight: number) {
+    this.renderEnemy(canvasWidth, canvasHeight);
+    this.renderPartner(canvasWidth, canvasHeight);
+  }
+
+  renderEnemy(canvasWidth: number, canvasHeight: number) {
+    const enemy =
+      currentEnemy.find((enemy) => this.x === enemy.x && this.y === enemy.y) ||
+      null;
+
+    if (enemy) {
+      const pos = this.toIso(this.x, this.y, canvasWidth, canvasHeight);
+
+      // 计算当前应该显示的帧
+      const frameWidth = 48; // 单帧宽度
+      const frameHeight = 48; // 帧高度
+      const totalFrames = 6; // 总帧数
+      const frameIndex = Math.floor(Date.now() / 200) % totalFrames; // 每200ms切换一帧
+
+      this.ctx.drawImage(
+        enemy.image,
+        frameIndex * frameWidth, // 源图片裁剪起点x
+        0, // 源图片裁剪起点y
+        frameWidth, // 源图片裁剪宽度
+        frameHeight, // 源图片裁剪高度
+        pos.x - enemy.imageSize / 2, // 目标位置x
+        pos.y - enemy.imageSize / 2 + 20, // 目标位置y
+        enemy.imageSize, // 目标宽度
+        enemy.imageSize // 目标高度
+      );
+    }
+
+    return enemy;
+  }
+
+  renderPartner(canvasWidth: number, canvasHeight: number) {
+    const partner =
+      currentPartner.find(
+        (partner) => this.x === partner.x && this.y === partner.y
+      ) || null;
+
+    if (partner) {
+      const pos = this.toIso(this.x, this.y, canvasWidth, canvasHeight);
+
+      // 计算当前应该显示的帧
+      const frameWidth = 48; // 单帧宽度
+      const frameHeight = 48; // 帧高度
+      const totalFrames = 6; // 总帧数
+      const frameIndex = Math.floor(Date.now() / 200) % totalFrames; // 每200ms切换一帧
+
+      this.ctx.drawImage(
+        partner.image,
+        frameIndex * frameWidth, // 源图片裁剪起点x
+        0, // 源图片裁剪起点y
+        frameWidth, // 源图片裁剪宽度
+        frameHeight, // 源图片裁剪高度
+        pos.x - partner.imageSize / 2 + 15, // 目标位置x
+        pos.y - partner.imageSize / 2, // 目标位置y
+        partner.imageSize, // 目标宽度
+        partner.imageSize // 目标高度
+      );
+    }
+
+    return partner;
   }
 }
 
