@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import MapManager from "./MapManager";
+import GameLayout from "./Layout/GameLayout";
 
 const canvasWidth = 800;
 const canvasHeight = 800;
@@ -22,5 +23,9 @@ export default function Game() {
     new MapManager(canvas, ctx, canvasWidth, canvasHeight);
   }, []);
 
-  return <canvas ref={canvasRef} id="gameCanvas" />;
+  return (
+    <GameLayout>
+      <canvas ref={canvasRef} id="gameCanvas" />;
+    </GameLayout>
+  );
 }
